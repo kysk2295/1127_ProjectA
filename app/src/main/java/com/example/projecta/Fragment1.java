@@ -25,7 +25,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 
 
-public class Fragment1 extends Fragment {
+public class Fragment1 extends Fragment implements MainActivity.OnDataPutListener {
 
 
     RecyclerView recyclerView;
@@ -49,7 +49,7 @@ public class Fragment1 extends Fragment {
         recyclerView.setHasFixedSize(true);
         ItemTouchHelper itemTouchHelper= new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        arrayList.clear();
+
         dataPut();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -85,7 +85,9 @@ public class Fragment1 extends Fragment {
         }
     };
 
+
     void dataPut(){
+        arrayList.clear();
         dbHelper= new DBHelper(getContext());
         sqLiteDatabase= dbHelper.getReadableDatabase();
         String sql="select * from tb_project";
@@ -106,6 +108,11 @@ public class Fragment1 extends Fragment {
             //TODO: 나중에 개발하자 ㅎ
         }
         myAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDataPut() {
+        dataPut();
     }
 
 
@@ -236,4 +243,6 @@ public class Fragment1 extends Fragment {
             }
         }
     }
+
 }
+

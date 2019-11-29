@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     String a,b,c,d;
     TimePickerDialog dialog;
     String d_time;
+    OnDataPutListener onDataPutListener;
     //TimePickerDialog.OnTimeSetListener listener;
 
     private static final String TAG_DATETIME_FRAGMENT = "TAG_DATETIME_FRAGMENT";
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView=findViewById(R.id.bottom_bar);
         imageView=findViewById(R.id.plus);
         frameLayout=findViewById(R.id.frame_layout);
-
+        onDataPutListener = fragment1;
         FragmentTransaction transaction=fragmentManager.beginTransaction();
         transaction.replace(R.id.frame_layout,fragment1).commitAllowingStateLoss();
         DBHelper dbHelper= new DBHelper(MainActivity.this);
@@ -150,9 +152,8 @@ public class MainActivity extends AppCompatActivity {
                         dbInsert("tb_project",b,a,c,d);
                         Log.d("name",name.getText().toString());
                         customDialog.dismiss();
-
-
-
+                        if(onDataPutListener != null)
+                            onDataPutListener.onDataPut();
                     }
                 });
                 LayoutInflater inflater = LayoutInflater.from(context);
@@ -161,13 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 name=dialogView.findViewById(R.id.edit_name);
                 //time=dialogView.findViewById(R.id.edit_time);
                 desc=dialogView.findViewById(R.id.edit_desc);
-
-
-
             }
-
-
-
         });
 
 
@@ -188,13 +183,13 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                 }
                 return false;
+
             }
         });
-
-
-
     }
-
+    public interface OnDataPutListener{
+        void onDataPut();
+    }
     private void showTimePickDialog() {
 
         Log.d("start","start1");
@@ -216,13 +211,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     View.OnClickListener negativeListener= new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             customDialog.dismiss();
         }
     };
-
     TimePickerDialog.OnTimeSetListener listener= new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker timePicker, int i, int i1) {
@@ -233,5 +228,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
+    public void setOnDataPutListener(OnDataPutListener onDataPutListener) {
+        this.onDataPutListener = onDataPutListener;
+    }
 }
